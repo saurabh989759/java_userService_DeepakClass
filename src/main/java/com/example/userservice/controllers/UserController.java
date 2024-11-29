@@ -25,7 +25,7 @@ public class UserController {
     public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto requestDto) {
         return null ;
     }
-    @@GetMapping("/validate")
+    @GetMapping("/validate")
     public UserDto validateToken(@PathVariable String Token ){
      return null ;
     }
