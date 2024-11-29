@@ -4,6 +4,8 @@ import com.example.userservice.models.Token;
 import com.example.userservice.models.User;
 
 public class UserServiceImpl implements UserService {
+
+
     @Override
     public Token login(String email, String password) {
         return null;
