@@ -7,7 +7,10 @@ import com.example.userservice.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,7 +28,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Token login(String email, String password) {
-        return null;
+        Optional<User> ouser = UserRepository.findByEmail(email);
+        if(ouser.isEmpty())return null ;
+        String Token = null ;
+        User user = ouser.get() ;
+        Token token = new Token();
+        if(encoder.matches(password,user.getPassword())){
+
+            token.setUser(user);
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, 30);
+            Date date30DaysFromNow = calendar.getTime();
+            token.setExpiryAt(date30DaysFromNow);
+
+//            token.setExpiryAt(new Date());
+
+            //Token value can be any random String of 128 characters.
+            token.setValue(UUID.randomUUID().toString());
+        }
+        return token;
     }
 
     @Override

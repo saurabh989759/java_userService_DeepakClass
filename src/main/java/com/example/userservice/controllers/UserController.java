@@ -1,9 +1,6 @@
 package com.example.userservice.controllers;
 
-import com.example.userservice.dtos.LoginRequestDto;
-import com.example.userservice.dtos.LogoutRequestDto;
-import com.example.userservice.dtos.SignUpRequestDto;
-import com.example.userservice.dtos.UserDto;
+import com.example.userservice.dtos.*;
 import com.example.userservice.models.Token;
 import com.example.userservice.models.User;
 import com.example.userservice.services.UserService;
@@ -18,9 +15,11 @@ public class UserController {
         this.userService = userService;
     }
     @PostMapping("/login")
-    public Token login(@RequestBody LoginRequestDto requestDto) {
-
-        return null ;
+    public TokenDto login(@RequestBody LoginRequestDto requestDto) {
+        Token token = userService.login(
+                requestDto.getEmail(),  requestDto.getPassword()
+        );
+        return TokenDto.from(token) ;
     }
     @PostMapping("/signup")
     public UserDto signUp(@RequestBody SignUpRequestDto requestDto) {
