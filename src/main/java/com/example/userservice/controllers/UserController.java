@@ -1,9 +1,11 @@
 package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.*;
+import com.example.userservice.exceptions.ValidTokenNotFoundException;
 import com.example.userservice.models.Token;
 import com.example.userservice.models.User;
 import com.example.userservice.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +33,27 @@ public class UserController {
     }
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto requestDto) {
-        return null ;
+        ResponseEntity<Void> responseEntity = null ;
+        try {
+            userService.logout(requestDto.getTokenValue()); ;
+            responseEntity = new ResponseEntity<>(
+                    HttpStatus.OK
+            );
+        } catch (ValidTokenNotFoundException e) {
+            responseEntity = new ResponseEntity<>(
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
+        return responseEntity;
     }
-    @GetMapping("/validate")
+    @GetMapping("/validate/{Token}")
     public UserDto validateToken(@PathVariable String Token ){
-     return null ;
+       try {
+           User  user = userService.ValidateToken(Token) ;
+           return UserDto.from(user) ;
+
+       } catch (ValidTokenNotFoundException e) {
+           throw new RuntimeException(e);
+       }
     }
 }
