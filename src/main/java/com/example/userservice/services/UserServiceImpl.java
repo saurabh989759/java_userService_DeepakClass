@@ -1,5 +1,6 @@
 package com.example.userservice.services;
 
+import com.example.userservice.exceptions.ValidTokenNotFoundException;
 import com.example.userservice.models.Token;
 import com.example.userservice.models.User;
 import com.example.userservice.repositories.TokenRepository;
@@ -66,12 +67,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(Token token) {
+    public void logout(String tokenValue) throws ValidTokenNotFoundException {
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedAndExpiryAtGreaterThan(tokenValue
+                , false , new Date()) ;
+
+        if(tokenOptional.isEmpty()){
+            throw  new ValidTokenNotFoundException( "fuck u ") ;
+        }
+        Token token = tokenOptional.get();
+        token.setDeleted(true);
+        tokenRepository.save(token);
 
     }
 
     @Override
-    public User ValidateToken(String token) {
-        return null;
+    public User ValidateToken(String tokenValue) throws  ValidTokenNotFoundException {
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedAndExpiryAtGreaterThan(tokenValue
+                , false , new Date()) ;
+
+        if(tokenOptional.isEmpty()){
+            throw  new ValidTokenNotFoundException( "fuck u ") ;
+        }
+        Token token = tokenOptional.get();
+        User user = token.getUser();
+        return user;
     }
 }
