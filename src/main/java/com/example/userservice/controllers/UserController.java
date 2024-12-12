@@ -37,11 +37,15 @@ public class UserController {
         try {
             userService.logout(requestDto.getTokenValue()); ;
             responseEntity = new ResponseEntity<>(
+
+
                     HttpStatus.OK
             );
         } catch (ValidTokenNotFoundException e) {
             responseEntity = new ResponseEntity<>(
                     HttpStatus.UNAUTHORIZED
+
+
             );
         }
         return responseEntity;
